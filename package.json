@@ -18,5 +18,8 @@
   },
   "scripts": {
     "test": "jest"
+  },
+  "dependencies": {
+    "randomstring": "^1.2.2"
   }
 }
