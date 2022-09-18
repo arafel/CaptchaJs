@@ -7,11 +7,13 @@ describe("constructor tests", () => {
   });
 
   test("bad client throws", () => {
+    // Ignore as we're deliberately missing a parameter.
     // @ts-ignore
     expect(() => new CaptchaJs({ secret: "secret" })).toThrow('No client ID provided');
   });
 
   test("bad secret throws", () => {
+    // Ignore as we're deliberately missing a parameter.
     // @ts-ignore
     expect(() => new CaptchaJs({ client: "demo" })).toThrow('No secret provided');
   });
@@ -31,7 +33,7 @@ describe("image tests", () => {
   test("URL is returned", () => {
     const o = new CaptchaJs({ client: "demo", secret: "secret" });
     const url = o.getImageUrl();
-    expect(url).toMatch(/http:\/\/image\.captchas\.net\/\?client=demo&random=\w\w\w\w\w\w/);
+    expect(url).toMatch(/https:\/\/image\.captchas\.net\/\?client=demo&random=\w\w\w\w\w\w/);
   });
 
   test("URL reflects client change", () => {
@@ -90,7 +92,7 @@ describe("audio tests", () => {
   test("URL is returned", () => {
     const o = new CaptchaJs({ client: "demo", secret: "secret" });
     const url = o.getAudioUrl();
-    expect(url).toMatch(/http:\/\/audio\.captchas\.net\/\?client=demo&random=\w\w\w\w\w\w/);
+    expect(url).toMatch(/https:\/\/audio\.captchas\.net\/\?client=demo&random=\w\w\w\w\w\w/);
   });
 
   test("URL reflects base URL change", () => {
@@ -126,7 +128,7 @@ describe("audio tests", () => {
   })
 });
 
-describe("random tests", () => {
+describe("getRandomString", () => {
   let o: CaptchaJs;
 
   beforeEach(() => {
@@ -134,9 +136,36 @@ describe("random tests", () => {
   });
 
   test("two calls to random() get different values", () => {
-    const val1 = o.getRandom();
-    const val2 = o.getRandom();
+    const val1 = o.getRandomString();
+    const val2 = o.getRandomString();
 
     expect(val1).not.toEqual(val2);
   });
 });
+
+describe("makePassword", () => {
+  test("returns a password of the right length", () => {
+    let o = new CaptchaJs({ client: "demo", secret: "secret" });
+    expect(o.makePassword("I am a random string")).toHaveLength(6);
+
+    o = new CaptchaJs({ client: "demo", secret: "secret", numberOfLetters: 3 });
+    expect(o.makePassword("I am a random string")).toHaveLength(3);
+
+    o = new CaptchaJs({ client: "demo", secret: "secret", numberOfLetters: 8 });
+    expect(o.makePassword("I am a random string")).toHaveLength(8);
+  })
+
+  test("throws if not given a random string", () => {
+    const o = new CaptchaJs({ client: "demo", secret: "secret" });
+    // Ignore as we're deliberately missing a parameter.
+    // @ts-ignore
+    expect(() => o.makePassword()).toThrow('No random string supplied');
+  })
+
+  test("returns the same password with the same random string", () => {
+    const o = new CaptchaJs({ client: "demo", secret: "secret" });
+    const password1 = o.makePassword("I am a random string");
+    const password2 = o.makePassword("I am a random string");
+    expect(password1).toEqual(password2);
+  })
+})

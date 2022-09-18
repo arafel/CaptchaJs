@@ -46,34 +46,29 @@ export class CaptchaJs implements CaptchaJs {
     if (options.alphabet === "") {
       throw new Error("Can't use an empty alphabet");
     }
-    if (options.numberOfLetters == 0) {
+    if (options.numberOfLetters === 0) {
       throw new Error("Need at least one letter");
     }
 
     this.opts = Object.assign({}, defaultOptions, options);
   }
 
-  makeCommonUrl(base: string): string {
-
+  getRandomString(): string {
+    return randomstring.generate({ length: 40 });
   }
 
-  getRandom(random?: string): string {
-    const hash = createHash('md5');
+  makePassword(random: string): string {
     if (!random) {
-      random = randomstring.generate({
-                              length: 12,
-                              charset: 'alphabetic',
-                              capitalization: "lowercase"
-                            });
+      throw new Error("No random string supplied");
     }
     const concatString = this.opts.secret + random;
+    const hash = createHash('md5');
     hash.write(concatString);
-    const digest = hash.digest().slice(0, this.opts.numberOfLetters);
-    const ss = digest.slice(0, this.opts.numberOfLetters);
+    const substring = hash.digest().slice(0, this.opts.numberOfLetters);
     // TODO rewrite with map() or similar
     let password = "";
-    for (const c of ss) {
-      // 'alphabet' will exist, we'll have used the default if needed.
+    for (const c of substring) {
+      // 'alphabet' will exist by now, we'll have used the default if needed.
       password += this.opts.alphabet![c % this.opts.alphabet!.length]
     }
 
@@ -81,9 +76,10 @@ export class CaptchaJs implements CaptchaJs {
   }
 
   getImageUrl(opts?: GetImageUrlOptions): string {
-    const base = opts?.baseURL || "http://image.captchas.net/";
-    const randomString = this.getRandom(opts?.randomString);
-    let url = `${base}?client=${this.opts.client}&random=${randomString}`
+    const base = opts?.baseURL || "https://image.captchas.net/";
+    const randomString = opts?.randomString || this.getRandomString();
+    const password = this.makePassword(randomString);
+    let url = `${base}?client=${this.opts.client}&random=${password}`
     if (this.opts.alphabet !== standardAlphabet) {
       url += `&alphabet=${this.opts.alphabet}`;
     }
@@ -100,9 +96,10 @@ export class CaptchaJs implements CaptchaJs {
   }
 
   getAudioUrl(opts?: GetAudioUrlOptions): string {
-    const base = opts?.baseURL || "http://audio.captchas.net/";
-    const randomString = this.getRandom(opts?.randomString);
-    let url = `${base}?client=${this.opts.client}&random=${randomString}`;
+    const base = opts?.baseURL || "https://audio.captchas.net/";
+    const randomString = opts?.randomString || this.getRandomString();
+    const password = this.makePassword(randomString);
+    let url = `${base}?client=${this.opts.client}&random=${password}`;
     if (this.opts.alphabet !== standardAlphabet) {
       url += `&alphabet=${this.opts.alphabet}`;
     }
