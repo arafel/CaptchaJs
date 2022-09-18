@@ -13,6 +13,16 @@ export interface CaptchaJsOptions {
   alphabet?: string;
 }
 
+export interface GetImageUrlOptions {
+  randomString?: string;
+  baseURL?: string;
+}
+
+export interface GetAudioUrlOptions {
+  randomString?: string;
+  baseURL?: string;
+}
+
 const defaultOptions: CaptchaJsOptions = {
   // These are defined in default but not expected ever to be used.
   client: "demo",
@@ -43,13 +53,19 @@ export class CaptchaJs implements CaptchaJs {
     this.opts = Object.assign({}, defaultOptions, options);
   }
 
-  getRandom(): string {
+  makeCommonUrl(base: string): string {
+
+  }
+
+  getRandom(random?: string): string {
     const hash = createHash('md5');
-    const random = randomstring.generate({
-                                           length: 12,
-                                           charset: 'alphabetic',
-                                           capitalization: "lowercase"
-                                         });
+    if (!random) {
+      random = randomstring.generate({
+                              length: 12,
+                              charset: 'alphabetic',
+                              capitalization: "lowercase"
+                            });
+    }
     const concatString = this.opts.secret + random;
     hash.write(concatString);
     const digest = hash.digest().slice(0, this.opts.numberOfLetters);
@@ -64,10 +80,9 @@ export class CaptchaJs implements CaptchaJs {
     return password;
   }
 
-  getImageUrl(randomString?: string, base = "http://image.captchas.net/"): string {
-    if (!randomString) {
-      randomString = this.getRandom();
-    }
+  getImageUrl(opts?: GetImageUrlOptions): string {
+    const base = opts?.baseURL || "http://image.captchas.net/";
+    const randomString = this.getRandom(opts?.randomString);
     let url = `${base}?client=${this.opts.client}&random=${randomString}`
     if (this.opts.alphabet !== standardAlphabet) {
       url += `&alphabet=${this.opts.alphabet}`;
@@ -84,10 +99,9 @@ export class CaptchaJs implements CaptchaJs {
     return url;
   }
 
-  getAudioUrl(randomString?: string, base = "http://audio.captchas.net/"): string {
-    if (!randomString) {
-      randomString = this.getRandom();
-    }
+  getAudioUrl(opts?: GetAudioUrlOptions): string {
+    const base = opts?.baseURL || "http://audio.captchas.net/";
+    const randomString = this.getRandom(opts?.randomString);
     let url = `${base}?client=${this.opts.client}&random=${randomString}`;
     if (this.opts.alphabet !== standardAlphabet) {
       url += `&alphabet=${this.opts.alphabet}`;

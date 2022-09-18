@@ -42,7 +42,7 @@ describe("image tests", () => {
 
   test("URL reflects base URL change", () => {
     const o = new CaptchaJs({ client: "demo", secret: "secret" });
-    const url = o.getImageUrl(undefined, "newbaseurl.something.net");
+    const url = o.getImageUrl({ baseURL: "newbaseurl.something.net" });
     expect(url).toMatch(/newbaseurl\.something\.net/);
   });
 
@@ -71,6 +71,19 @@ describe("image tests", () => {
     expect(url).toMatch(/height=240/);
   });
 
+  test("specifying the random string gives the same URL", () => {
+    const o = new CaptchaJs({ client: "demo", secret: "secret", height: 240 });
+    const url1 = o.getImageUrl({ randomString: "RandomZufall" });
+    const url2 = o.getImageUrl({ randomString: "RandomZufall" });
+    expect(url1).toEqual(url2);
+  })
+
+  test("not specifying the random string gives two different URLs", () => {
+    const o = new CaptchaJs({ client: "demo", secret: "secret", height: 240 });
+    const url1 = o.getImageUrl();
+    const url2 = o.getImageUrl();
+    expect(url1).not.toEqual(url2);
+  })
 });
 
 describe("audio tests", () => {
@@ -82,7 +95,7 @@ describe("audio tests", () => {
 
   test("URL reflects base URL change", () => {
     const o = new CaptchaJs({ client: "demo", secret: "secret" });
-    const url = o.getAudioUrl(undefined, "newbaseurl.something.net");
+    const url = o.getAudioUrl({ baseURL: "newbaseurl.something.net" });
     expect(url).toMatch(/newbaseurl\.something\.net/);
   });
 
@@ -97,6 +110,20 @@ describe("audio tests", () => {
     const url = o.getAudioUrl();
     expect(url).toMatch(/letters=5/);
   });
+
+  test("specifying the random string gives the same URL", () => {
+    const o = new CaptchaJs({ client: "demo", secret: "secret", height: 240 });
+    const url1 = o.getAudioUrl({ randomString: "RandomZufall" });
+    const url2 = o.getAudioUrl({ randomString: "RandomZufall" });
+    expect(url1).toEqual(url2);
+  })
+
+  test("not specifying the random string gives two different URLs", () => {
+    const o = new CaptchaJs({ client: "demo", secret: "secret", height: 240 });
+    const url1 = o.getAudioUrl();
+    const url2 = o.getAudioUrl();
+    expect(url1).not.toEqual(url2);
+  })
 });
 
 describe("random tests", () => {
