@@ -1,5 +1,4 @@
-import { MemoryRandomStore } from "../src";
-import { RandomStoreOptions } from "../build/types";
+import { RandomStoreOptions, MemoryRandomStore } from "../src";
 
 describe("memory store", () => {
   test("can't add the same string twice", () => {

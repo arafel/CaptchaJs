@@ -27,20 +27,6 @@ describe("constructor tests", () => {
     expect(() => new CaptchaJs({ client: "demo", secret: "secret", numberOfLetters: 0 }))
       .toThrow("Need at least one letter");
   })
-
-  describe.skip("check we can inject a RandomStore", () => {
-    // Basic checks only - we're not testing the functioning of the store itself, just our use of it.
-    test("do we add a string", () => {
-    })
-
-    test("do we validate a string", () => {
-
-    })
-
-    test("do we call expire", () => {
-
-    })
-  })
 });
 
 describe("image tests", () => {
