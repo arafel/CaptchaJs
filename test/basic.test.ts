@@ -27,49 +27,70 @@ describe("constructor tests", () => {
     expect(() => new CaptchaJs({ client: "demo", secret: "secret", numberOfLetters: 0 }))
       .toThrow("Need at least one letter");
   })
+
+  describe.skip("check we can inject a RandomStore", () => {
+    // Basic checks only - we're not testing the functioning of the store itself, just our use of it.
+    test("do we add a string", () => {
+    })
+
+    test("do we validate a string", () => {
+
+    })
+
+    test("do we call expire", () => {
+
+    })
+  })
 });
 
 describe("image tests", () => {
   test("URL is returned", () => {
     const o = new CaptchaJs({ client: "demo", secret: "secret" });
-    const url = o.getImageUrl();
+    const rs = o.getRandomString();
+    const url = o.getImageUrl({ randomString: rs });
     expect(url).toMatch(/https:\/\/image\.captchas\.net\/\?client=demo&random=\w\w\w\w\w\w/);
   });
 
   test("URL reflects client change", () => {
     const o = new CaptchaJs({ client: "newclient", secret: "secret" });
-    const url = o.getImageUrl();
+    const rs = o.getRandomString();
+    const url = o.getImageUrl({ randomString: rs });
     expect(url).toMatch(/client=newclient/);
   });
 
   test("URL reflects base URL change", () => {
     const o = new CaptchaJs({ client: "demo", secret: "secret" });
-    const url = o.getImageUrl({ baseURL: "newbaseurl.something.net" });
+    const rs = o.getRandomString()
+    const url = o.getImageUrl({ randomString: rs, baseURL: "newbaseurl.something.net" });
     expect(url).toMatch(/newbaseurl\.something\.net/);
   });
 
   test("URL reflects alphabet change", () => {
     const o = new CaptchaJs({ client: "demo", secret: "secret", alphabet: "abcdef" });
-    const url = o.getImageUrl();
+    const rs = o.getRandomString();
+    const url = o.getImageUrl({ randomString: rs });
     expect(url).toMatch(/alphabet=abcdef/);
   });
 
 
   test("URL reflects number of letters change", () => {
     const o = new CaptchaJs({ client: "demo", secret: "secret", numberOfLetters: 5 });
-    const url = o.getImageUrl();
+    const rs = o.getRandomString();
+    const url = o.getImageUrl({ randomString: rs });
     expect(url).toMatch(/letters=5/);
   });
 
   test("URL reflects width change", () => {
     const o = new CaptchaJs({ client: "demo", secret: "secret", width: 480 });
-    const url = o.getImageUrl();
+    const rs = o.getRandomString();
+    const url = o.getImageUrl({ randomString: rs });
     expect(url).toMatch(/width=480/);
   });
 
   test("URL reflects height change", () => {
     const o = new CaptchaJs({ client: "demo", secret: "secret", height: 240 });
-    const url = o.getImageUrl();
+    const rs = o.getRandomString();
+    const url = o.getImageUrl({ randomString: rs });
     expect(url).toMatch(/height=240/);
   });
 
@@ -79,37 +100,34 @@ describe("image tests", () => {
     const url2 = o.getImageUrl({ randomString: "RandomZufall" });
     expect(url1).toEqual(url2);
   })
-
-  test("not specifying the random string gives two different URLs", () => {
-    const o = new CaptchaJs({ client: "demo", secret: "secret", height: 240 });
-    const url1 = o.getImageUrl();
-    const url2 = o.getImageUrl();
-    expect(url1).not.toEqual(url2);
-  })
 });
 
 describe("audio tests", () => {
   test("URL is returned", () => {
     const o = new CaptchaJs({ client: "demo", secret: "secret" });
-    const url = o.getAudioUrl();
+    const rs = o.getRandomString()
+    const url = o.getAudioUrl({ randomString: rs });
     expect(url).toMatch(/https:\/\/audio\.captchas\.net\/\?client=demo&random=\w\w\w\w\w\w/);
   });
 
   test("URL reflects base URL change", () => {
     const o = new CaptchaJs({ client: "demo", secret: "secret" });
-    const url = o.getAudioUrl({ baseURL: "newbaseurl.something.net" });
+    const rs = o.getRandomString()
+    const url = o.getAudioUrl({ randomString: rs, baseURL: "newbaseurl.something.net" });
     expect(url).toMatch(/newbaseurl\.something\.net/);
   });
 
   test("URL reflects alphabet change", () => {
     const o = new CaptchaJs({ client: "demo", secret: "secret", alphabet: "abcdef" });
-    const url = o.getAudioUrl();
+    const rs = o.getRandomString()
+    const url = o.getAudioUrl({ randomString: rs });
     expect(url).toMatch(/alphabet=abcdef/);
   });
 
   test("URL reflects number of letters change", () => {
     const o = new CaptchaJs({ client: "demo", secret: "secret", numberOfLetters: 5 });
-    const url = o.getAudioUrl();
+    const rs = o.getRandomString()
+    const url = o.getAudioUrl({ randomString: rs });
     expect(url).toMatch(/letters=5/);
   });
 
@@ -118,13 +136,6 @@ describe("audio tests", () => {
     const url1 = o.getAudioUrl({ randomString: "RandomZufall" });
     const url2 = o.getAudioUrl({ randomString: "RandomZufall" });
     expect(url1).toEqual(url2);
-  })
-
-  test("not specifying the random string gives two different URLs", () => {
-    const o = new CaptchaJs({ client: "demo", secret: "secret", height: 240 });
-    const url1 = o.getAudioUrl();
-    const url2 = o.getAudioUrl();
-    expect(url1).not.toEqual(url2);
   })
 });
 
@@ -167,5 +178,57 @@ describe("makePassword", () => {
     const password1 = o.makePassword("I am a random string");
     const password2 = o.makePassword("I am a random string");
     expect(password1).toEqual(password2);
+  })
+})
+
+describe("random string validation", () => {
+  let o;
+
+  beforeEach(() => {
+    o = new CaptchaJs({ client: "demo", secret: "secret" });
+  });
+
+  test("reject a random string we didn't generate", () => {
+    expect(o.validateRandomString("I am a test string")).toBeFalsy();
+  })
+
+  test("accept a random string we did generate", () => {
+    const randomString = o.getRandomString();
+    expect(o.validateRandomString(randomString)).toBeTruthy();
+  })
+
+  test("can only use a random string once", () => {
+    const randomString = o.getRandomString();
+    expect(o.validateRandomString(randomString)).toBeTruthy();
+    expect(o.validateRandomString(randomString)).toBeFalsy();
+  })
+});
+
+describe("password checks", () => {
+  test("valid password with matching random string passes", () => {
+    const o = new CaptchaJs({ client: "demo", secret: "secret" });
+    const rs = o.getRandomString();
+    const password = o.makePassword(rs);
+    expect(o.verifyPassword(rs, password)).toBeTruthy();
+  })
+
+  test("password that's too long gets rejected", () => {
+    const o = new CaptchaJs({ client: "demo", secret: "secret" });
+    const rs = o.getRandomString();
+    expect(o.verifyPassword(rs, "too long")).toBeFalsy();
+  })
+
+  test("valid password with different random string fails", () => {
+    const o = new CaptchaJs({ client: "demo", secret: "secret" });
+    const rs = o.getRandomString();
+    const otherRs = o.getRandomString();
+    const password = o.makePassword(rs);
+    expect(o.verifyPassword(otherRs, password)).toBeFalsy();
+  })
+
+  test("invalid password with valid random string is rejected", () => {
+    const o = new CaptchaJs({ client: "demo", secret: "secret" });
+    const rs = o.getRandomString();
+    expect(o.verifyPassword(rs, "abcdef")).toBeFalsy();
   })
 })

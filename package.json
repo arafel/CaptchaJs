@@ -26,6 +26,7 @@
     "ci": "yarn audit --high && yarn test"
   },
   "dependencies": {
+    "dayjs": "^1.11.5",
     "randomstring": "^1.2.2"
   }
 }
