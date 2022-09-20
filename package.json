@@ -1,12 +1,11 @@
 {
-  "name": "captchajs",
+  "name": "@solarwinter/captchajs",
   "version": "0.1.0",
   "description": "Sample implementation for captchas.net",
-  "main": "index.js",
+  "main": "build/index.js",
   "repository": "https://github.com/arafel/captchajs",
   "author": "Paul Walker",
   "license": "MIT",
-  "private": true,
   "devDependencies": {
     "@babel/core": "^7.0.0-0",
     "@babel/preset-env": "^7.19.1",
