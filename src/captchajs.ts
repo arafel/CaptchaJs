@@ -3,6 +3,9 @@ import { createHash } from 'node:crypto';
 import randomstring from "randomstring";
 import { MemoryRandomStore } from "./memory_randomstore";
 import { CaptchaJsOptions, GetAudioUrlOptions, GetImageUrlOptions, RandomStore } from "./index";
+import * as util from "node:util";
+
+const logger = util.debuglog('captchajs:captcha');
 
 const standardAlphabet = "abcdefghijklmnopqrstuvwxyz";
 
@@ -21,6 +24,7 @@ export class CaptchaJs implements CaptchaJs {
   private randomStore: RandomStore;
 
   constructor(options: CaptchaJsOptions) {
+    logger("Constructing with options", options);
     if (!options.client) {
       throw new Error("No client ID provided");
     }
@@ -35,7 +39,9 @@ export class CaptchaJs implements CaptchaJs {
     }
 
     this.opts = Object.assign({}, defaultOptions, options);
+    logger("this.opts", this.opts);
     this.randomStore = options.randomStore ?? new MemoryRandomStore();
+    logger("this.randomStore", this.randomStore);
   }
 
   getRandomString(): string {
@@ -70,8 +76,7 @@ export class CaptchaJs implements CaptchaJs {
 
   getImageUrl(opts: GetImageUrlOptions): string {
     const base = opts?.baseURL || "https://image.captchas.net/";
-    const password = this.makePassword(opts.randomString);
-    let url = `${base}?client=${this.opts.client}&random=${password}`
+    let url = `${base}?client=${this.opts.client}&random=${opts.randomString}`
     if (this.opts.alphabet !== standardAlphabet) {
       url += `&alphabet=${this.opts.alphabet}`;
     }
@@ -89,8 +94,7 @@ export class CaptchaJs implements CaptchaJs {
 
   getAudioUrl(opts: GetAudioUrlOptions): string {
     const base = opts?.baseURL || "https://audio.captchas.net/";
-    const password = this.makePassword(opts.randomString);
-    let url = `${base}?client=${this.opts.client}&random=${password}`;
+    let url = `${base}?client=${this.opts.client}&random=${opts.randomString}`;
     if (this.opts.alphabet !== standardAlphabet) {
       url += `&alphabet=${this.opts.alphabet}`;
     }
@@ -100,16 +104,20 @@ export class CaptchaJs implements CaptchaJs {
     return url;
   }
 
-  validateRandomString(randomString: string, invalidate=true): boolean {
+  validateRandomString(randomString: string, invalidate= true): boolean {
+    logger("Validating random string", randomString);
     return this.randomStore.validateRandom(randomString, invalidate);
   }
 
   verifyPassword(randomString: string, password: string): boolean {
+    logger("Verifying password", password, "using random string", randomString);
     if (password.length != this.opts.numberOfLetters) {
+      logger("Password length mismatch, reject.")
       return false;
     }
 
     const ourPassword = this.makePassword(randomString);
+    logger("Calculated password", ourPassword);
     return ourPassword === password;
   }
 }
