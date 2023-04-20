@@ -4,12 +4,17 @@
   "description": "Sample implementation for captchas.net",
   "main": "build/index.js",
   "repository": "https://github.com/arafel/captchajs",
-  "author": "Paul Walker",
+  "author": "Paul Walker (https://github.com/arafel)",
   "license": "MIT",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
   },
+  "keywords": [
+    "javascript",
+    "captcha",
+    "captchas.net"
+  ],
   "devDependencies": {
     "@babel/core": "^7.0.0-0",
     "@babel/preset-env": "^7.19.1",
