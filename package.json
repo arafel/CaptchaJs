@@ -1,6 +1,6 @@
 {
   "name": "@solarwinter/captchajs",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Sample implementation for captchas.net",
   "main": "build/index.js",
   "repository": "https://github.com/arafel/captchajs",
