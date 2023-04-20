@@ -57,7 +57,6 @@ if (!captcha.validateRandomString(data.randomString)) {
 
     // At this point you can re-render the contact page, for example with error text:
     //   "That captcha has expired or already been used"
-    });
 } else if (!captcha.verifyPassword(data.randomString, data.captchaPassword)) {
     console.log(`Error verifying password ${data.captchaPassword}`);
 
