@@ -2,3 +2,5 @@
 /node_modules/
 .idea
 /reports/
+/demo/node_modules
+/build/
