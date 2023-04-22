@@ -6,6 +6,7 @@
   "repository": "https://github.com/arafel/captchajs",
   "author": "Paul Walker (https://github.com/arafel)",
   "license": "MIT",
+  "types": "build/types/index.d.ts",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
