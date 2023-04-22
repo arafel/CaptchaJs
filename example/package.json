@@ -1,14 +1,14 @@
 {
-  "name": "demo",
+  "name": "example",
   "version": "1.0.0",
-  "description": "Trivial demo of using CaptchaJs",
+  "description": "Trivial example of using CaptchaJs",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon"
   },
   "keywords": [
-    "demo",
+    "example",
     "captchajs"
   ],
   "author": "Paul Walker (https://github.com/arafel)",
