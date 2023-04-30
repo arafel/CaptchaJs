@@ -104,12 +104,21 @@ export class CaptchaJs implements CaptchaJs {
     return url;
   }
 
-  validateRandomString(randomString: string, invalidate= true): boolean {
+  validateRandomString(randomString: string, invalidate = true): boolean {
     logger("Validating random string", randomString);
     return this.randomStore.validateRandom(randomString, invalidate);
   }
 
   verifyPassword(randomString: string, password: string): boolean {
+    if (!password) {
+      logger("No password");
+      return false;
+    }
+    if (!randomString) {
+      logger("No random string");
+      return false;
+    }
+
     logger("Verifying password", password, "using random string", randomString);
     if (password.length != this.opts.numberOfLetters) {
       logger("Password length mismatch, reject.")
