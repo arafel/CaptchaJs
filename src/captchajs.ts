@@ -105,6 +105,11 @@ export class CaptchaJs implements CaptchaJs {
   }
 
   validateRandomString(randomString: string, invalidate = true): boolean {
+    if (!randomString) {
+      logger("No random string");
+      return false;
+    }
+
     logger("Validating random string", randomString);
     return this.randomStore.validateRandom(randomString, invalidate);
   }
@@ -124,7 +129,6 @@ export class CaptchaJs implements CaptchaJs {
       logger("Password length mismatch, reject.")
       return false;
     }
-
     const ourPassword = this.makePassword(randomString);
     logger("Calculated password", ourPassword);
     return ourPassword === password;
