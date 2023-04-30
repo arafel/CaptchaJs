@@ -154,9 +154,7 @@ describe("makePassword", () => {
 
   test("throws if not given a random string", () => {
     const o = new CaptchaJs({ client: "demo", secret: "secret" });
-    // Ignore as we're deliberately missing a parameter.
-    // @ts-ignore
-    expect(() => o.makePassword()).toThrow('No random string supplied');
+    expect(() => o.makePassword(undefined)).toThrow('No random string supplied');
   })
 
   test("returns the same password with the same random string", () => {
@@ -216,5 +214,23 @@ describe("password checks", () => {
     const o = new CaptchaJs({ client: "demo", secret: "secret" });
     const rs = o.getRandomString();
     expect(o.verifyPassword(rs, "abcdef")).toBeFalsy();
+  })
+
+  test("empty password with valid random string is rejected", () => {
+    const o = new CaptchaJs({ client: "demo", secret: "secret" });
+    const rs = o.getRandomString();
+    expect(o.verifyPassword(rs, undefined)).toBeFalsy();
+  })
+
+  test("valid password with empty random string is rejected", () => {
+    const o = new CaptchaJs({ client: "demo", secret: "secret" });
+    const rs = o.getRandomString();
+    expect(o.verifyPassword(undefined, "abcdef")).toBeFalsy();
+  })
+
+  test("empty password with empty random string is rejected", () => {
+    const o = new CaptchaJs({ client: "demo", secret: "secret" });
+    const rs = o.getRandomString();
+    expect(o.verifyPassword(undefined, undefined)).toBeFalsy();
   })
 })
