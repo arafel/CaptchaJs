@@ -1,19 +1,19 @@
 version: 2
 jobs:
   test:
-    working_directory: ~/knex-cleaner
+    working_directory: ~/captchajs
     docker:
-      - image: cimg/node:14.21
+      - image: cimg/node:18.13
 
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-v14-{{ checksum "yarn.lock" }}
+          key: dependency-cache-v18-{{ checksum "yarn.lock" }}
       - run:
           name: install dependencies
           command: yarn install
       - save_cache:
-          key: dependency-cache-v14-{{ checksum "yarn.lock" }}
+          key: dependency-cache-v18-{{ checksum "yarn.lock" }}
           paths:
             - ./node_modules
       - run:
