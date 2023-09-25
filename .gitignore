@@ -4,3 +4,5 @@
 /reports/
 /demo/node_modules
 /build/
+/example/node_modules
+/.env
