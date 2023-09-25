@@ -35,7 +35,8 @@
     "release": "release-it",
     "dev:build": "tsc -w",
     "dev:test": "jest --watch",
-    "ci": "yarn test"
+    "ci": "yarn test",
+    "prepare": "yarn build"
   },
   "dependencies": {
     "dayjs": "^1.11.5",
