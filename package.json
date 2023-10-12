@@ -36,7 +36,7 @@
     "dev:build": "tsc -w",
     "dev:test": "jest --watch",
     "ci": "yarn test",
-    "prepare": "pwd && tsc && ls build/"
+    "prepare": "tsc"
   },
   "dependencies": {
     "dayjs": "^1.11.5",
