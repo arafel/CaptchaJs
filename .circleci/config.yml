@@ -3,17 +3,17 @@ jobs:
   test:
     working_directory: ~/captchajs
     docker:
-      - image: cimg/node:18.18
+      - image: cimg/node:20.19
 
     steps:
       - checkout
       - restore_cache:
-          key: dependency-cache-v18-{{ checksum "yarn.lock" }}
+          key: dependency-cache-v20-{{ checksum "yarn.lock" }}
       - run:
           name: install dependencies
           command: yarn install
       - save_cache:
-          key: dependency-cache-v18-{{ checksum "yarn.lock" }}
+          key: dependency-cache-v20-{{ checksum "yarn.lock" }}
           paths:
             - ./node_modules
       - run:
