@@ -27,7 +27,7 @@
     "jest-junit": "^16.0.0",
     "release-it": "^19.0.1",
     "ts-node": "^10.9.1",
-    "typescript": "^5.0.2"
+    "typescript": "^6.0.2"
   },
   "scripts": {
     "build": "tsc",
