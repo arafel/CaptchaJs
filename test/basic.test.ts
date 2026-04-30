@@ -172,6 +172,10 @@ describe("random string validation", () => {
     o = new CaptchaJs({ client: "demo", secret: "secret" });
   });
 
+  test("reject an empty random string", () => {
+    expect(o.validateRandomString()).toBeFalsy();
+  })
+
   test("reject a random string we didn't generate", () => {
     expect(o.validateRandomString("I am a test string")).toBeFalsy();
   })
