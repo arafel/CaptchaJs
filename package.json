@@ -41,6 +41,6 @@
   "dependencies": {
     "dayjs": "^1.11.5",
     "randomstring": "^1.2.2",
-    "picomatch": "4.0.4"
+    "picomatch": "4.0.5"
   }
 }
