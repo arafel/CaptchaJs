@@ -18,7 +18,7 @@ jobs:
             - ./node_modules
       - run:
           name: test
-          command: yarn test --ci --runInBand
+          command: yarn ci
           environment:
             JEST_JUNIT_OUTPUT_DIR: ./reports
       - store_artifacts:
