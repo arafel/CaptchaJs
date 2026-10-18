@@ -3,7 +3,7 @@ jobs:
   test:
     working_directory: ~/captchajs
     docker:
-      - image: cimg/node:20.19
+      - image: cimg/node:22
 
     steps:
       - checkout
